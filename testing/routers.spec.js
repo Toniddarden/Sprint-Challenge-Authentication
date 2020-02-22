@@ -3,38 +3,40 @@ const jokes = require('../jokes/jokes-router');
 const server = require('../api/server')
 
 
-describe("server.js", () => {
-    // testing my  "test": "cross-env DB_ENV=testing jest --watch" inside of package.json:scripts{}
-    it("is running in testing env",
-      () => {
-        expect(process.env.DB_ENV).toBe("testing");
-      });
-        
+describe('server.js', ()=>{
+    describe('register', ()=>{
+        it('returns status 201', async()=>{
+            const res = await request(server)
+            .post('/api/auth/register')
+            .send({
+                username: "kobe",
+                password: "hello"
+            });
+            expect(201)
+        })
 
-  
-  });
-
-describe("POST /", () => {
-    // error should toBe(200)
-    it('should return 200 OK', async () => {
-        const res = await request(server).get('/login');
-        expect(res.status).toBe(404)
-    });
-
-    it('it should return 200', () => {
-        return request(server).get('/')
-        .then(res => {
-            expect(res.status).toBe(200)
-        }).catch(err => {
-            expect(true===false)
+        it('check for missing required fields', async ()=>{
+            const res = await request(server)
+            .post('/api/auth/register')
+            expect(res.status).toBe(500)
         })
     })
 
-    // error should toBe(200)
-//     it('should return 200 OK', async () => {
-//         const res = await request(server).get('/register');
-//         expect(res.status).toBe(404);
-//     });
+    describe('login', ()=>{
+        it('returns status 200', async ()=>{
+            const res = await request(server)
+            .post('/api/auth/login')
+            .auth('username', 'password')
+            expect(200)
+        })
+
+        it("Error:login info is missing", async () => {
+            const res = await request(server).post("/api/auth/login")
+            expect(res.status).toBe(500);
+        });
+
+        
+    })
 })
 
  

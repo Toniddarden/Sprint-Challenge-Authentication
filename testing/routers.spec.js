@@ -9,10 +9,10 @@ describe('server.js', ()=>{
             const res = await request(server)
             .post('/api/auth/register')
             .send({
-                username: "kobe",
-                password: "hello"
+                username: Date.now(),
+                password: "member"
             });
-            expect(201)
+            expect(res.status).toBe(201)
         })
 
         it('check for missing required fields', async ()=>{
@@ -26,8 +26,11 @@ describe('server.js', ()=>{
         it('returns status 200', async ()=>{
             const res = await request(server)
             .post('/api/auth/login')
-            .auth('username', 'password')
-            expect(200)
+            .send({
+                username: 'new',
+                password: "member"
+            })
+            expect(res.status).toBe(200)
         })
 
         it("Error:login info is missing", async () => {
